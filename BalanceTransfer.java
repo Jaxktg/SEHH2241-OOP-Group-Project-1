@@ -35,24 +35,25 @@ public class BalanceTransfer extends Transaction {
         Screen screen = getScreen();
         BankDatabase bankDatabase = getBankDatabase();
         boolean validAmount = false;
-        
         do {
-            screen.displayMessage("\nEnter amount to transfer: ");
-            double amount = keypad.getInput();
-            validAmount = transferAmountValidator(amount);
+            try {
+                screen.displayMessage("\nEnter amount to transfer: ");
+                double amount = keypad.getInput();
+                validAmount = transferAmountValidator(amount);
 
-            if (validAmount) {
-                double availableBalance = bankDatabase.getAvailableBalance(getAccountNumber(), sourceAccountType);
-                if (amount <= availableBalance) {
-                    performTransfer(amount, sourceAccountType, transferData);
-                    screen.displayMessageLine("\nTransfer successful!");
-                    return;
-                } else {
-                    screen.displayMessageLine("\nInsufficient funds. Transaction canceled.");
-                    return;
+                if (validAmount) {
+                    double availableBalance = bankDatabase.getAvailableBalance(getAccountNumber(), sourceAccountType);
+                    if (amount <= availableBalance) {
+                        performTransfer(amount, sourceAccountType, transferData);
+                        screen.displayMessageLine("\nTransfer successful!");
+                        return;
+                    } else {
+                        screen.displayMessageLine("\nInsufficient funds. Transaction canceled.");
+                        return;
+                    }
                 }
-            }
-        } while (!validAmount);
+            } catch(NullPointerException e ) { screen.displayMessageLine("Recipient ID not found. Transaction canceled."); return;}
+        } while (!validAmount);   
     }
 
     private void performTransfer(double amount, int sourceAccountType, int[] transferData) {
