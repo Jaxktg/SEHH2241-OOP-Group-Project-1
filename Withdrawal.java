@@ -35,7 +35,7 @@ public class Withdrawal extends Transaction
     screen.displayMessageLine("\nSelect account type:");
     screen.displayMessageLine("1 - Savings Account");
     screen.displayMessageLine("2 - Cheque Account");
-    screen.displayMessage("\nChoose an account: ");
+    screen.displayMessage("\nChoose an account               : ");
     
     int accountType = keypad.getInput() - 1; // Convert to 0-based index
     
@@ -104,7 +104,7 @@ public class Withdrawal extends Transaction
          screen.displayMessageLine( "3 - $1000" );
          screen.displayMessageLine("4 - Other amount:");
          screen.displayMessageLine( "5 - Cancel transaction" );
-         screen.displayMessage( "\nChoose a withdrawal amount: " );
+         screen.displayMessage( "\nChoose a withdrawal amount      : " );
 
          int input = keypad.getInput(); // get user input through keypad
 
@@ -139,7 +139,7 @@ public class Withdrawal extends Transaction
        boolean isInvalid;
        
        do {
-           screen.displayMessage("\nEnter an amount multiple of 100: ");
+           screen.displayMessage("\nEnter an amount multiple of 100 : ");
            amount = keypad.getInput();
            // Check is moved inside the loop and updated each time
            isInvalid = ((amount % 100) != 0 || amount <= 0);

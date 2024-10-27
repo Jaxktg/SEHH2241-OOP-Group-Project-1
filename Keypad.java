@@ -21,7 +21,11 @@ public class Keypad
            catch (java.util.InputMismatchException e) {
                // Clear the invalid input from the scanner
                input.nextLine();
-               System.out.println("Error: Please enter a valid integer.");
+               System.out.print(String.format("\033[%dA",2)); //move up 1 line in console
+               System.out.println("Invalid input, please enter an integer.");
+               //System.out.print(String.format("\033[%dA",1)); //move up 1 line in console
+               //System.out.print("\033[2K");
+               System.out.print("\033[" + 34 + "C" + "\033[K");
            }
        }
    } // end method getInput

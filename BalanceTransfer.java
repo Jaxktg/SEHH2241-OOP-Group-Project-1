@@ -1,6 +1,6 @@
 public class BalanceTransfer extends Transaction {
     private final Keypad keypad;
-    private final static int CANCELED = 3;
+    private final static int CANCELED = 2;
 
     public BalanceTransfer(int userAccountNumber, Screen atmScreen, BankDatabase atmBankDatabase, Keypad atmKeypad) {
         super(userAccountNumber, atmScreen, atmBankDatabase);
@@ -15,7 +15,7 @@ public class BalanceTransfer extends Transaction {
         screen.displayMessageLine("\nSelect account type to send money from: ");
         screen.displayMessageLine("1 - Savings Account");
         screen.displayMessageLine("2 - Cheque Account");
-        screen.displayMessage("\nChoose an account: ");
+        screen.displayMessage("\nChoose an account               : ");
 
         int accountType = keypad.getInput() - 1; // Convert to 0-based index
     
@@ -37,7 +37,7 @@ public class BalanceTransfer extends Transaction {
         boolean validAmount = false;
         do {
             try {
-                screen.displayMessage("\nEnter amount to transfer: ");
+                screen.displayMessage("\nEnter amount to transfer        : ");
                 double amount = keypad.getInput();
                 validAmount = transferAmountValidator(amount);
 
@@ -82,16 +82,15 @@ public class BalanceTransfer extends Transaction {
         while (userChoice == 0) {
             screen.displayMessageLine("Transfer Menu:");
             screen.displayMessageLine("1 - Transfer to other account no."); 
-            screen.displayMessageLine("2 - Transfer to oversea bank account");
-            screen.displayMessageLine("3 - Cancel Transaction");
-            screen.displayMessage("\nEnter a choice: ");
+            screen.displayMessageLine("2 - Cancel Transaction");
+            screen.displayMessage("\nEnter a choice:                 : ");
             
             userChoice = keypad.getInput();
 
             switch (userChoice) {
                 case 1: 
                     while (userChoice == 1 && targetAccount == 0) { //TODO 
-                        screen.displayMessage("Enter the recipient account no. :");
+                        screen.displayMessage("Enter the recipient account no. : ");
                         int inputAccountNo = keypad.getInput();
                         if (inputAccountNo != getAccountNumber()) {
                             targetAccount = inputAccountNo;
@@ -100,10 +99,6 @@ public class BalanceTransfer extends Transaction {
                             targetAccount = 0;
                         }
                     }
-                    break;
-                case 2: 
-                    screen.displayMessageLine("Overseas transfers are not yet implemented."); //By Jack - TODO: Maybe make a IBAN / Swift Transfer system? 
-                    userChoice = 0;
                     break;
                 case CANCELED:
                     break;

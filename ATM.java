@@ -53,7 +53,7 @@ public class ATM
    {
       screen.displayMessage( "\nPlease enter your account number: " );
       int accountNumber = keypad.getInput(); // input account number
-      screen.displayMessage( "\nEnter your PIN: " ); // prompt for PIN
+      screen.displayMessage( "\nEnter your PIN                  : " ); // prompt for PIN
       int pin = keypad.getInput(); // input PIN
       
       // set userAuthenticated to boolean value returned by database
@@ -121,7 +121,8 @@ public class ATM
       screen.displayMessageLine("1 - Annual (Year)");
       screen.displayMessageLine("2 - Quarterly (Quarter)");
       screen.displayMessageLine("3 - Monthly (Month)");
-      screen.displayMessage("\nEnter your choice: ");
+      screen.displayMessageLine("4 - Cancel");
+      screen.displayMessage("\nEnter a choice:                 : ");
 
       int choice = keypad.getInput();
       String period = "";
@@ -136,6 +137,8 @@ public class ATM
          case 3:
             period = "month";
             break;
+         case 4:
+            return;
          default:
             screen.displayMessageLine("Invalid choice.");
             return; 
@@ -160,7 +163,7 @@ public class ATM
       screen.displayMessageLine( "3 - Select Interest rate");
       screen.displayMessageLine("4 - Transfer Money");
       screen.displayMessageLine( "5 - Exit\n" );
-      screen.displayMessage( "Enter a choice: " );
+      screen.displayMessage( "Enter a choice:                 : " );
       return keypad.getInput(); // return user's selection
    } // end method displayMainMenu
          
