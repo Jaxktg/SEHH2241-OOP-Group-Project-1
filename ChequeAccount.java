@@ -34,7 +34,16 @@ public class ChequeAccount extends Account {
         }
     }
 
+    public boolean isTransferAmountValid(double amount) {
+        if (this.limitPerCheque < amount) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void displayAccountDetails() {
+
         System.out.printf("Account Number: %d\nAvailable balance: HK$%.2f\nTotal balance: HK$%.2f\nLimit per check: HK$%.2f\n", 
             getAccountNumber(), getAvailableBalance(), getTotalBalance(), getLimitPerCheque());
     }

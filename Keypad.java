@@ -29,6 +29,17 @@ public class Keypad
            }
        }
    } // end method getInput
+   //
+   public double getDoubleInput() {
+       while (true) {
+           try {
+               return input.nextDouble(); // attempt to read a double
+           } catch (java.util.InputMismatchException e) {
+               input.nextLine(); // Clear the invalid input from the scanner
+               System.out.print("Invalid input, please enter a number.");
+           }
+       }
+   }
 } // end class Keypad  
 
 

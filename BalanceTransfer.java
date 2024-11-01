@@ -32,37 +32,53 @@ public class BalanceTransfer extends Transaction {
     }
 
     private void processTransfer(int sourceAccountType, int[] transferData) {
-        Screen screen = getScreen();
-        BankDatabase bankDatabase = getBankDatabase();
-        boolean validAmount = false;
-        do {
-            try {
-                screen.displayMessage("\nEnter amount to transfer        : ");
-                double amount = keypad.getInput();
-                validAmount = transferAmountValidator(amount);
+    Screen screen = getScreen();
+    BankDatabase bankDatabase = getBankDatabase();
+    boolean validAmount = false;
 
-                if (validAmount) {
-                    double availableBalance = bankDatabase.getAvailableBalance(getAccountNumber(), sourceAccountType);
-                    if (amount <= availableBalance) {
-                        performTransfer(amount, sourceAccountType, transferData);
-                        screen.displayMessageLine("\nTransfer successful!");
-                        return;
-                    } else {
-                        screen.displayMessageLine("\nInsufficient funds. Transaction canceled.");
-                        return;
-                    }
-                }
-            } catch(NullPointerException e ) { screen.displayMessageLine("Recipient ID not found. Transaction canceled."); return;}
-        } while (!validAmount);   
+        do {
+            screen.displayMessage("\nEnter amount to transfer (can be decimal): ");
+            double amount = keypad.getDoubleInput(); // Use new method to allow decimal input
+
+            if (amount <= 0) {
+                screen.displayMessageLine("Input amount invalid!");
+                continue;
+            }
+
+            int targetAccount = transferData[1];
+            try {
+                bankDatabase.getAvailableBalance(targetAccount, 1);
+            } catch(NullPointerException e) {
+                screen.displayMessageLine("Account with no. " + targetAccount + " not found.");
+                return;
+            }
+
+            ChequeAccount chequeAccount = bankDatabase.getAuthenticatedChequeAccount(getAccountNumber());
+            if (chequeAccount != null && chequeAccount.isTransferAmountValid(amount)) {
+                screen.displayMessageLine("Transfer amount exceeds cheque limit of HK$" + chequeAccount.getLimitPerCheque());
+                continue;
+            }
+
+            double availableBalance = bankDatabase.getAvailableBalance(getAccountNumber(), sourceAccountType);
+            if (amount <= availableBalance) {
+                performTransfer(amount, sourceAccountType, transferData);
+                screen.displayMessageLine("\nTransfer successful!");
+                return;
+            } else {
+                screen.displayMessageLine("\nInsufficient funds. Transaction canceled.");
+                return;
+            }
+        } while (!validAmount);
+
     }
 
     private void performTransfer(double amount, int sourceAccountType, int[] transferData) {
+        Screen screen = getScreen();
         BankDatabase bankDatabase = getBankDatabase();
-        
-        if (transferData[0] == 1) {
-            bankDatabase.debit(getAccountNumber(), sourceAccountType, amount);
-            bankDatabase.credit(transferData[1], 1, amount); // Assuming target is always a checking account
-        }
+            if (transferData[0] == 1) {
+                bankDatabase.debit(getAccountNumber(), sourceAccountType, amount);
+                bankDatabase.credit(transferData[1], 1, amount); // Assuming target is always a checking account
+            }
     }
 
     private boolean transferAmountValidator(double inputAmount) {

@@ -24,8 +24,8 @@ public class BankDatabase
       accounts[2][1] = new ChequeAccount(13579, 24681, 700.0, 850.0);
       
       // Initialize user 4's accounts (22222: Savings, Cheque)
-      accounts[3][0] = new SavingsAccount(22222, 45454, 200.0, 200.0);
-      accounts[3][1] = new ChequeAccount(22222, 45454, 100.0, 200.0);
+      accounts[3][0] = new SavingsAccount(22222, 45454, 20000.0, 20000.0);
+      accounts[3][1] = new ChequeAccount(22222, 45454, 10002.0, 20000.0);
    }
 
    public SavingsAccount getAuthenticatedSavingsAccount(int accountNumber)
