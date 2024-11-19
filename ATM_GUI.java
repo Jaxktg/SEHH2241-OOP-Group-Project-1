@@ -8,31 +8,32 @@ import javax.swing.JPasswordField;
 import javax.swing.SwingUtilities;
 import java.awt.CardLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent; // Import for ActionEvent
-import java.awt.event.ActionListener; // Import for ActionListener
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent; 
+import java.awt.event.ActionListener; 
 
 public class ATM_GUI extends JFrame {
     private CardLayout cardLayout;
     private JPanel mainPanel;
     private BankDatabase bankDatabase;
     private int currentAccountNumber;
-    private double withdrawalAmount; // Variable to store withdrawal amount
-    private JLabel confirmationLabel; // Confirmation amount label
-    private CashDispenser cashDispenser; // Create cash dispenser
+    private double withdrawalAmount; 
+    private JLabel confirmationLabel; 
+    private CashDispenser cashDispenser; 
 
-    // Maximum transfer limit for checking account
     private static final double CHECKING_ACCOUNT_TRANSFER_LIMIT = 10000.00;
 
     public ATM_GUI() {
-        bankDatabase = new BankDatabase(); // Initialize bank database
-        cashDispenser = new CashDispenser(); // Initialize cash dispenser
+        bankDatabase = new BankDatabase(); 
+        cashDispenser = new CashDispenser(); 
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
         setTitle("ATM System");
         setSize(400, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Center the window
+        setLocationRelativeTo(null); 
 
         // Create different panels
         mainPanel.add(createWelcomePanel(), "Welcome");
@@ -48,20 +49,23 @@ public class ATM_GUI extends JFrame {
         add(mainPanel);
     }
 
-    // Welcome panel
     private JPanel createWelcomePanel() {
         JPanel welcomePanel = new JPanel();
         JLabel welcomeLabel = new JLabel("Welcome to ATM");
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 30)); // Larger font
         welcomePanel.add(welcomeLabel);
+        
         JButton startButton = new JButton("Start");
+        startButton.setFont(new Font("Arial", Font.BOLD, 20)); // Larger font
+        startButton.setPreferredSize(new Dimension(200, 60)); // Button size
         startButton.addActionListener(e -> cardLayout.show(mainPanel, "Authenticate"));
         welcomePanel.add(startButton);
+        
         return welcomePanel;
     }
 
-    // Authentication panel
     private JPanel createAuthenticatePanel() {
-        JPanel authPanel = new JPanel(new GridLayout(3, 1));
+        JPanel authPanel = new JPanel(new GridLayout(4, 1));
         JTextField accountNumberField = new JTextField();
         JPasswordField pinField = new JPasswordField();
 
@@ -71,6 +75,7 @@ public class ATM_GUI extends JFrame {
         authPanel.add(pinField);
 
         JButton submitButton = new JButton("Submit");
+        submitButton.setFont(new Font("Arial", Font.BOLD, 20)); // Larger font
         submitButton.addActionListener(e -> {
             String accountNumber = accountNumberField.getText();
             String pin = new String(pinField.getPassword());
@@ -83,7 +88,6 @@ public class ATM_GUI extends JFrame {
         return authPanel;
     }
 
-    // Validate account information
     private boolean validateAccount(String accountNumber, String pin) {
         try {
             int accountNum = Integer.parseInt(accountNumber);
@@ -100,7 +104,6 @@ public class ATM_GUI extends JFrame {
         }
     }
 
-    // Main menu panel
     private JPanel createMainMenuPanel() {
         JPanel menuPanel = new JPanel();
         JButton withdrawalButton = new JButton("Withdrawal");
@@ -109,27 +112,59 @@ public class ATM_GUI extends JFrame {
         JButton applyInterestButton = new JButton("Apply Interest");
         JButton exitButton = new JButton("Exit");
 
-        withdrawalButton.addActionListener(e -> cardLayout.show(mainPanel, "Withdrawal"));
-        balanceInquiryButton.addActionListener(e -> cardLayout.show(mainPanel, "BalanceInquiry"));
-        transferButton.addActionListener(e -> cardLayout.show(mainPanel, "Transfer"));
-        applyInterestButton.addActionListener(e -> cardLayout.show(mainPanel, "ApplyInterest"));
-        exitButton.addActionListener(e -> showExitConfirmation());
+        ActionListener menuActionListener = e -> {
+            JButton sourceButton = (JButton) e.getSource();
+            switch (sourceButton.getText()) {
+                case "Withdrawal":
+                    cardLayout.show(mainPanel, "Withdrawal");
+                    break;
+                case "Balance Inquiry":
+                    cardLayout.show(mainPanel, "BalanceInquiry");
+                    break;
+                case "Transfer Money":
+                    cardLayout.show(mainPanel, "Transfer");
+                    break;
+                case "Apply Interest":
+                    cardLayout.show(mainPanel, "ApplyInterest");
+                    break;
+                case "Exit":
+                    showExitConfirmation();
+                    break;
+            }
+        };
+
+        withdrawalButton.addActionListener(menuActionListener);
+        balanceInquiryButton.addActionListener(menuActionListener);
+        transferButton.addActionListener(menuActionListener);
+        applyInterestButton.addActionListener(menuActionListener);
+        exitButton.addActionListener(menuActionListener);
+
+        withdrawalButton.setFont(new Font("Arial", Font.BOLD, 20));
+        balanceInquiryButton.setFont(new Font("Arial", Font.BOLD, 20));
+        transferButton.setFont(new Font("Arial", Font.BOLD, 20));
+        applyInterestButton.setFont(new Font("Arial", Font.BOLD, 20));
+        exitButton.setFont(new Font("Arial", Font.BOLD, 20));
 
         menuPanel.add(withdrawalButton);
         menuPanel.add(balanceInquiryButton);
         menuPanel.add(transferButton);
         menuPanel.add(applyInterestButton);
         menuPanel.add(exitButton);
+        
         return menuPanel;
     }
 
-    // Withdrawal panel
     private JPanel createWithdrawalPanel() {
-        JPanel withdrawalPanel = new JPanel(new GridLayout(6, 1));
+        JPanel withdrawalPanel = new JPanel(new GridLayout(6, 1, 10, 10)); // Add gaps
         JButton predefinedButton1 = new JButton("Withdraw $100");
         JButton predefinedButton2 = new JButton("Withdraw $500");
         JButton predefinedButton3 = new JButton("Withdraw $1000");
         JButton customButton = new JButton("Withdraw Custom Amount");
+
+        predefinedButton1.setFont(new Font("Arial", Font.BOLD, 20));
+        predefinedButton2.setFont(new Font("Arial", Font.BOLD, 20));
+        predefinedButton3.setFont(new Font("Arial", Font.BOLD, 20));
+        customButton.setFont(new Font("Arial", Font.BOLD, 20));
 
         predefinedButton1.addActionListener(e -> initiateWithdrawal(100));
         predefinedButton2.addActionListener(e -> initiateWithdrawal(500));
@@ -142,6 +177,7 @@ public class ATM_GUI extends JFrame {
         withdrawalPanel.add(customButton);
 
         JButton backButton = new JButton("Back to Main Menu");
+        backButton.setFont(new Font("Arial", Font.BOLD, 20));
         backButton.addActionListener(e -> cardLayout.show(mainPanel, "MainMenu"));
         withdrawalPanel.add(backButton);
 
@@ -151,10 +187,9 @@ public class ATM_GUI extends JFrame {
     private void initiateWithdrawal(double amount) {
         withdrawalAmount = amount;
 
-        double availableSavingsBalance = bankDatabase.getAvailableBalance(currentAccountNumber, 0); // Assume savings account
-        double availableChequeBalance = bankDatabase.getAvailableBalance(currentAccountNumber, 1); // Assume cheque account
+        double availableSavingsBalance = bankDatabase.getAvailableBalance(currentAccountNumber, 0); 
+        double availableChequeBalance = bankDatabase.getAvailableBalance(currentAccountNumber, 1); 
 
-        // Check available balance and withdrawal amount
         if (availableSavingsBalance >= withdrawalAmount || availableChequeBalance >= withdrawalAmount) {
             updateWithdrawalConfirmationLabel();
             cardLayout.show(mainPanel, "WithdrawalConfirmation");
@@ -173,8 +208,8 @@ public class ATM_GUI extends JFrame {
                     return;
                 }
 
-                double availableSavingsBalance = bankDatabase.getAvailableBalance(currentAccountNumber, 0); // Assume savings account
-                double availableChequeBalance = bankDatabase.getAvailableBalance(currentAccountNumber, 1); // Assume cheque account
+                double availableSavingsBalance = bankDatabase.getAvailableBalance(currentAccountNumber, 0); 
+                double availableChequeBalance = bankDatabase.getAvailableBalance(currentAccountNumber, 1); 
 
                 if (availableSavingsBalance >= withdrawalAmount || availableChequeBalance >= withdrawalAmount) {
                     updateWithdrawalConfirmationLabel();
@@ -188,24 +223,23 @@ public class ATM_GUI extends JFrame {
         }
     }
 
-    // Update the amount in the withdrawal confirmation panel
     private void updateWithdrawalConfirmationLabel() {
         confirmationLabel.setText("Please confirm the amount: $" + withdrawalAmount);
     }
 
-    // Withdrawal confirmation panel
     private JPanel createWithdrawalConfirmationPanel() {
         JPanel confirmationPanel = new JPanel();
         confirmationLabel = new JLabel(); 
+        confirmationLabel.setFont(new Font("Arial", Font.BOLD, 20));
         confirmationPanel.add(confirmationLabel);
 
         JButton confirmWithdrawalButton = new JButton("Confirm Withdrawal");
+        confirmWithdrawalButton.setFont(new Font("Arial", Font.BOLD, 20)); 
         confirmWithdrawalButton.addActionListener(e -> {
-            int accountType = selectAccountType(); // Select account type
+            int accountType = selectAccountType(); 
             if (accountType != -1) {
                 int withdrawalAmountInt = (int) withdrawalAmount;
 
-                // Check if the cheque account has sufficient funds
                 if (accountType == 1 && bankDatabase.getAvailableBalance(currentAccountNumber, 1) < withdrawalAmount) {
                     JOptionPane.showMessageDialog(null, "Insufficient funds in Cheque Account.");
                     return;
@@ -213,7 +247,7 @@ public class ATM_GUI extends JFrame {
 
                 if (cashDispenser.isSufficientCashAvailable(withdrawalAmountInt)) {
                     bankDatabase.debit(currentAccountNumber, accountType, withdrawalAmountInt);
-                    cashDispenser.dispenseCash(withdrawalAmountInt); // Dispense cash
+                    cashDispenser.dispenseCash(withdrawalAmountInt); 
                     cardLayout.show(mainPanel, "CashDispensed");
                 } else {
                     JOptionPane.showMessageDialog(null, "Insufficient cash available in the ATM.");
@@ -223,13 +257,13 @@ public class ATM_GUI extends JFrame {
         confirmationPanel.add(confirmWithdrawalButton);
 
         JButton cancelButton = new JButton("Cancel");
+        cancelButton.setFont(new Font("Arial", Font.BOLD, 20));
         cancelButton.addActionListener(e -> cardLayout.show(mainPanel, "Withdrawal"));
         confirmationPanel.add(cancelButton);
 
         return confirmationPanel;
     }
 
-    // Method to select account type
     private int selectAccountType() {
         String[] options = {"Savings Account", "Cheque Account"};
         return JOptionPane.showOptionDialog(null, "Select account type for withdrawal:",
@@ -237,13 +271,14 @@ public class ATM_GUI extends JFrame {
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
     }
 
-    // Cash dispensing panel
     private JPanel createCashDispensedPanel() {
         JPanel cashPanel = new JPanel();
         JLabel messageLabel = new JLabel("Please take your cash and card.");
+        messageLabel.setFont(new Font("Arial", Font.BOLD, 20));
         cashPanel.add(messageLabel);
 
         JButton finishButton = new JButton("Finish");
+        finishButton.setFont(new Font("Arial", Font.BOLD, 20));
         finishButton.addActionListener(e -> {
             JOptionPane.showMessageDialog(null, "Thank you! Please take your card.");
             cardLayout.show(mainPanel, "MainMenu");
@@ -253,16 +288,16 @@ public class ATM_GUI extends JFrame {
         return cashPanel;
     }
 
-    // Balance inquiry panel
     private JPanel createBalanceInquiryPanel() {
         JPanel balancePanel = new JPanel();
         JButton checkBalanceButton = new JButton("Check Balance");
         JLabel balanceLabel = new JLabel("");
 
+        checkBalanceButton.setFont(new Font("Arial", Font.BOLD, 20));
         checkBalanceButton.addActionListener(e -> {
-            double availableSavingsBalance = bankDatabase.getAvailableBalance(currentAccountNumber, 0); // 0 for SavingsAccount
+            double availableSavingsBalance = bankDatabase.getAvailableBalance(currentAccountNumber, 0);
             double totalSavingsBalance = bankDatabase.getTotalBalance(currentAccountNumber, 0);
-            double availableChequeBalance = bankDatabase.getAvailableBalance(currentAccountNumber, 1); // 1 for ChequeAccount
+            double availableChequeBalance = bankDatabase.getAvailableBalance(currentAccountNumber, 1);
             double totalChequeBalance = bankDatabase.getTotalBalance(currentAccountNumber, 1);
             balanceLabel.setText(String.format("Savings - Available: $%.2f, Total: $%.2f | Cheque - Available: $%.2f, Total: $%.2f",
                     availableSavingsBalance, totalSavingsBalance, availableChequeBalance, totalChequeBalance));
@@ -272,13 +307,13 @@ public class ATM_GUI extends JFrame {
         balancePanel.add(balanceLabel);
 
         JButton backButton = new JButton("Back to Main Menu");
+        backButton.setFont(new Font("Arial", Font.BOLD, 20));
         backButton.addActionListener(e -> cardLayout.show(mainPanel, "MainMenu"));
         balancePanel.add(backButton);
 
         return balancePanel;
     }
 
-    // Transfer panel
     private JPanel createTransferPanel() {
         JPanel transferPanel = new JPanel(new GridLayout(5, 1));
         JTextField amountField = new JTextField();
@@ -290,6 +325,7 @@ public class ATM_GUI extends JFrame {
         transferPanel.add(amountField);
 
         JButton transferButton = new JButton("Transfer");
+        transferButton.setFont(new Font("Arial", Font.BOLD, 20));
         transferButton.addActionListener(e -> {
             String targetAccount = targetAccountField.getText();
             String amountText = amountField.getText();
@@ -320,35 +356,29 @@ public class ATM_GUI extends JFrame {
         transferPanel.add(transferButton);
 
         JButton backButton = new JButton("Back to Main Menu");
+        backButton.setFont(new Font("Arial", Font.BOLD, 20));
         backButton.addActionListener(e -> cardLayout.show(mainPanel, "MainMenu"));
         transferPanel.add(backButton);
 
         return transferPanel;
     }
 
-    // Execute transfer logic
     private void performTransfer(int targetAccountNumber, double amount) {
-        // Target account is checking account
-        int targetAccountType = 1; // 1 for checking account
+        int targetAccountType = 1; 
 
-        // User can choose to deduct from savings account (0) or checking account (1)
         int sourceAccountType = selectAccountTypeForTransfer();
 
-        // Check available balance of the account
         double availableBalance = bankDatabase.getAvailableBalance(currentAccountNumber, sourceAccountType);
         
         if (amount > 0 && availableBalance >= amount) {
-            // Deduct amount
             bankDatabase.debit(currentAccountNumber, sourceAccountType, amount);
-            // Credit amount to target checking account
-            bankDatabase.credit(targetAccountNumber, targetAccountType, amount); // Transfer to target checking account
+            bankDatabase.credit(targetAccountNumber, targetAccountType, amount);
             JOptionPane.showMessageDialog(null, "Transfer successful!");
         } else {
             JOptionPane.showMessageDialog(null, "Insufficient funds for this transaction.");
         }
     }
 
-    // Method to select account type for transfer
     private int selectAccountTypeForTransfer() {
         String[] options = {"Savings Account", "Cheque Account"};
         return JOptionPane.showOptionDialog(null, "Select account type for transfer:",
@@ -356,7 +386,6 @@ public class ATM_GUI extends JFrame {
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
     }
 
-    // Interest application panel
     private JPanel createApplyInterestPanel() {
         JPanel interestPanel = new JPanel(new GridLayout(4, 1));
         JTextField periodField = new JTextField();
@@ -365,6 +394,7 @@ public class ATM_GUI extends JFrame {
         interestPanel.add(periodField);
 
         JButton applyButton = new JButton("Apply Interest");
+        applyButton.setFont(new Font("Arial", Font.BOLD, 20));
         applyButton.addActionListener(e -> {
             String period = periodField.getText();
             applyInterest(period);
@@ -372,13 +402,13 @@ public class ATM_GUI extends JFrame {
         interestPanel.add(applyButton);
 
         JButton backButton = new JButton("Back to Main Menu");
+        backButton.setFont(new Font("Arial", Font.BOLD, 20));
         backButton.addActionListener(e -> cardLayout.show(mainPanel, "MainMenu"));
         interestPanel.add(backButton);
 
         return interestPanel;
     }
 
-    // Apply interest logic
     private void applyInterest(String period) {
         SavingsAccount account = bankDatabase.getAuthenticatedSavingsAccount(currentAccountNumber);
         if (account != null) {
@@ -389,7 +419,6 @@ public class ATM_GUI extends JFrame {
         }
     }
 
-    // Show exit confirmation dialog
     private void showExitConfirmation() {
         int response = JOptionPane.showConfirmDialog(null, "Do you want to return to the welcome screen instead of exiting?", 
             "Exit Confirmation", JOptionPane.YES_NO_OPTION);
@@ -401,7 +430,7 @@ public class ATM_GUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {//Make sure your GUI is safe, stable, and won't crash or become misaligned due to threading issues. Ensure that UI operations are executed on the correct thread to ensure user experience and program reliability.
+        SwingUtilities.invokeLater(() -> {
             ATM_GUI atmGui = new ATM_GUI();
             atmGui.setVisible(true);
         });
